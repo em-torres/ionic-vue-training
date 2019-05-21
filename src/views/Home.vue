@@ -1,37 +1,36 @@
 <template>
-  <ion-card>
-    <ion-item>
-      <ion-label position="floating">
-        Hello
-      </ion-label>
-      <ion-input :value="greeting" @input="greeting = $event.target.value"></ion-input>
-    </ion-item> 
-    <ion-button color="tertiary" expand="full" @click="handleClick">
-      Hello
-    </ion-button>
-  </ion-card>
+  <div>
+    <ion-card v-for="post in posts" :key="post.data.id" color="light">
+      <ion-card-content>
+        <template v-if="post.data.thumbnail.startsWith('https://')">
+          <img :src="post.data.thumbnail" alt="">
+        </template>
+        <ion-card-title color="light">{{ post.data.title }}</ion-card-title>
+        <ion-button color="tertiary" expand="full" @click="viewMore(post.data)">
+          View More
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </template>
 
-
-
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
-      greeting: ''
+      posts: []
     }
-  }, 
+  },
+  async mounted() {
+    const response = await axios.get('https://www.reddit.com/r/marvelstudios.json');
+    this.posts = response.data.data.children;
+  },
   methods: {
-    async handleClick() {
-      const alert = await this.$ionic.alertController.create({
-        header: 'Alert',
-        subHeader: 'Subtitle',
-        message: this.greeting,
-        buttons: ['Ok']
-      });
-      await alert.present();
+    viewMore(post) {
+      this.$router.push({name: 'detail', params: { post }})
     }
   }
-
 }
 </script>
