@@ -1,18 +1,37 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <ion-card>
+    <ion-item>
+      <ion-label position="floating">
+        Hello
+      </ion-label>
+      <ion-input :value="greeting" @input="greeting = $event.target.value"></ion-input>
+    </ion-item> 
+    <ion-button color="tertiary" expand="full" @click="handleClick">
+      Hello
+    </ion-button>
+  </ion-card>
 </template>
 
-<script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
 
+
+<script>
 export default {
-  name: 'home',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      greeting: ''
+    }
+  }, 
+  methods: {
+    async handleClick() {
+      const alert = await this.$ionic.alertController.create({
+        header: 'Alert',
+        subHeader: 'Subtitle',
+        message: this.greeting,
+        buttons: ['Ok']
+      });
+      await alert.present();
+    }
   }
+
 }
 </script>
